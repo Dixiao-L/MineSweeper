@@ -14,8 +14,54 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_S">
+    <property name="title">
+     <string>开始(&amp;S)</string>
+    </property>
+    <addaction name="action_Beginner"/>
+    <addaction name="action_Intermediate"/>
+    <addaction name="action_Senior"/>
+    <addaction name="action_Manual"/>
+    <addaction name="separator"/>
+    <addaction name="action_Newgame"/>
+   </widget>
+   <addaction name="menu_S"/>
+  </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_Beginner">
+   <property name="text">
+    <string>初级(&amp;B)</string>
+   </property>
+  </action>
+  <action name="action_Intermediate">
+   <property name="text">
+    <string>中级(&amp;I)</string>
+   </property>
+  </action>
+  <action name="action_Senior">
+   <property name="text">
+    <string>高级(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_Manual">
+   <property name="text">
+    <string>自定义(&amp;M)</string>
+   </property>
+  </action>
+  <action name="action_Newgame">
+   <property name="text">
+    <string>新的一局(&amp;N)</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
