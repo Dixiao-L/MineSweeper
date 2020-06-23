@@ -12,3 +12,15 @@ DialogSize::~DialogSize()
 {
     delete ui;
 }
+
+int DialogSize::rowCount() {
+    return ui->spinBoxRow->value();
+}
+
+int DialogSize::columnCount() {
+    return ui->spinBoxColumn->value();
+}
+
+int DialogSize::mineCount() {
+    return ui->spinBoxMine->value();
+}

@@ -36,6 +36,7 @@ public:
     int flagNum, digNum;    //旗数、挖开数
     int cancelNum;  //正确的旗数
     int IsWin, IsLose;  //输赢状态
+    int timer;  //计时器
 
 private:
     //递归展开

@@ -2,6 +2,8 @@
 #include "stdlib.h"
 #include "time.h"
 
+#include <QTime>
+
 MineMap::MineMap() {
     rowNum = 9;
     columnNum = 9;
@@ -21,6 +23,7 @@ void MineMap::Init() {
     cancelNum = 0;
     IsWin = 0;
     IsLose = 0;
+    timer = 0;
     Map = (int ***)malloc(rowNum * sizeof(int **));
 
     for (int i = 0; i < rowNum; i++)
@@ -99,8 +102,9 @@ void MineMap::MultiDigMine(int r, int c) {
         if(Map[r][c][NUM] == ff) {
             for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
-                    if (r + i >= 0 && r + i < rowNum && c + j >= 0 && c + j < columnNum)
-                        expand(r + i, c + j);
+                    if (r + i >= 0 && r + i < rowNum && c + j >= 0 && c + j < columnNum){
+                        DigMine(r + i, c + j);
+                    }
                 }
             }
         }

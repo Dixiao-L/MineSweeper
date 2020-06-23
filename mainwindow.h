@@ -2,7 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QThread>
+#include <QTime>
+#include <QTimer>
+
 #include "minemap.h"
+#include "dialogsize.h"
+#include "dialogname.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,6 +22,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void paintEvent(QPaintEvent *);
+    QTime beginTime;    //开始时间戳
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -26,9 +33,11 @@ private:
     Ui::MainWindow *ui;
 
     MineMap mineMap;
-    int offsetx, offsety;
-    int ccol, crow;
-    bool tog;
+    int offsetx, offsety, offsetcol;
+    int ccol, crow; //当前行列
+    bool tog;   //是否双键
+    int duration;   //用时
+    QTimer *runtime;
 
 private slots:
     void on_action_Newgame_triggered();
@@ -36,6 +45,8 @@ private slots:
     void on_action_Intermediate_triggered();
     void on_action_Senior_triggered();
     void on_action_Manual_triggered();
+    void on_action_Exit_triggered();
+    void on_sec();  //计时
 
 };
 #endif // MAINWINDOW_H

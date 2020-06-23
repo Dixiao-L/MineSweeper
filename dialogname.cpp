@@ -12,3 +12,11 @@ DialogName::~DialogName()
 {
     delete ui;
 }
+
+QString DialogName::nameSet() {
+    return ui->lineEditName->text();
+}
+
+void DialogName::timeShow(int msec) {
+    ui->label_Time->setText(QString::number(msec / 1000) + "." + QString::number(msec % 1000) + " s");
+}

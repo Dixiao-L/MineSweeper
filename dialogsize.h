@@ -14,6 +14,9 @@ class DialogSize : public QDialog
 public:
     explicit DialogSize(QWidget *parent = nullptr);
     ~DialogSize();
+    int rowCount();
+    int columnCount();
+    int mineCount();
 
 private:
     Ui::DialogSize *ui;

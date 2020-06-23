@@ -1,5 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="blocks">res/mapblocks.bmp</file>
+        <file alias="frame">res/frame.bmp</file>
+        <file alias="num">res/num.bmp</file>
+        <file alias="blocks">res/blocks.bmp</file>
+        <file alias="win">res/win.bmp</file>
+        <file alias="click">res/click.bmp</file>
+        <file alias="stat">res/stat.bmp</file>
+        <file alias="lose">res/lose.bmp</file>
     </qresource>
 </RCC>

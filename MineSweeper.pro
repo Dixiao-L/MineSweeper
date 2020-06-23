@@ -16,15 +16,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    dialogname.cpp \
+    dialogrank.cpp \
+    dialogsize.cpp \
     main.cpp \
     mainwindow.cpp \
     minemap.cpp
 
 HEADERS += \
+    dialogname.h \
+    dialogrank.h \
+    dialogsize.h \
     mainwindow.h \
     minemap.h
 
 FORMS += \
+    dialogname.ui \
+    dialogrank.ui \
+    dialogsize.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -36,4 +45,10 @@ RESOURCES += \
     res.qrc
 
 DISTFILES += \
-    README.md
+    README.md \
+    favicon.ico
+
+RC_ICONS += \
+    favicon.ico
+
+QMAKE_CXXFLAGS += /source-charset:utf-8 /execution-charset:utf-8
