@@ -7,5 +7,7 @@
         <file alias="click">res/click.bmp</file>
         <file alias="stat">res/stat.bmp</file>
         <file alias="lose">res/lose.bmp</file>
+        <file alias="picTab">res/Tab.jpg</file>
+        <file alias="Wec">res/Wechat.jpg</file>
     </qresource>
 </RCC>

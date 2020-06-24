@@ -11,6 +11,7 @@
 #define FLAT    0   //未挖开
 #define DIGGED  1   //挖开
 #define FLAGGED 2   //插旗
+#define QUES    3   //问号
 
 class MineMap
 {
@@ -25,8 +26,10 @@ public:
     void MultiDigMine(int r, int c);
     //插旗
     void FlagIt(int r, int c);
+    //问号
+    void QuesIt(int r, int c);
     //拔旗
-    void UnFlagIt(int r, int c);
+    void FlatIt(int r, int c);
     //释放内存
     void FreeMap();
 
@@ -34,7 +37,6 @@ public:
     int rowNum, columnNum;  //行列数
     int mineNum;    //雷数
     int flagNum, digNum;    //旗数、挖开数
-    int cancelNum;  //正确的旗数
     int IsWin, IsLose;  //输赢状态
     int timer;  //计时器
 

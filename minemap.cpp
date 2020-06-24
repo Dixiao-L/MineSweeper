@@ -20,7 +20,6 @@ MineMap::~MineMap()
 void MineMap::Init() {
     flagNum = 0;
     digNum = 0;
-    cancelNum = 0;
     IsWin = 0;
     IsLose = 0;
     timer = 0;
@@ -115,24 +114,17 @@ void MineMap::MultiDigMine(int r, int c) {
 void MineMap::FlagIt(int r, int c) {
     Map[r][c][STATE] = FLAGGED;
     ++flagNum;
+}
 
-    //插对了
-    if (Map[r][c][MINE] == 1)
-    {
-        ++cancelNum;
-    }
+//问号
+void MineMap::QuesIt(int r, int c) {
+    Map[r][c][STATE] = QUES;
+    --flagNum;
 }
 
 //拔旗
-void MineMap::UnFlagIt(int r, int c){
+void MineMap::FlatIt(int r, int c){
     Map[r][c][STATE] = FLAT;
-    --flagNum;
-
-    //插对的旗
-    if (Map[r][c][MINE] == 1)
-    {
-        --cancelNum;
-    }
 }
 
 void MineMap::FreeMap(){

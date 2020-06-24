@@ -15,7 +15,7 @@ public:
     explicit DialogName(QWidget *parent = nullptr);
     ~DialogName();
     QString nameSet();
-    void timeShow(int msec);
+    void timeShow(double msec);
 
 private:
     Ui::DialogName *ui;

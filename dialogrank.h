@@ -2,6 +2,8 @@
 #define DIALOGRANK_H
 
 #include <QDialog>
+#include <QFile>
+#include <QTextStream>
 
 namespace Ui {
 class DialogRank;
@@ -14,6 +16,7 @@ class DialogRank : public QDialog
 public:
     explicit DialogRank(QWidget *parent = nullptr);
     ~DialogRank();
+    void rankShow();
 
 private:
     Ui::DialogRank *ui;

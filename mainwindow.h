@@ -9,6 +9,8 @@
 #include "minemap.h"
 #include "dialogsize.h"
 #include "dialogname.h"
+#include "dialogrank.h"
+#include "dialogabout.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +39,7 @@ private:
     int ccol, crow; //当前行列
     bool tog;   //是否双键
     int duration;   //用时
+    int level;  //0-3   自定义，简单，中级，高级
     QTimer *runtime;
 
 private slots:
@@ -47,6 +50,9 @@ private slots:
     void on_action_Manual_triggered();
     void on_action_Exit_triggered();
     void on_sec();  //计时
+
+    void on_action_Rank_triggered();
+    void on_action_About_triggered();
 
 };
 #endif // MAINWINDOW_H

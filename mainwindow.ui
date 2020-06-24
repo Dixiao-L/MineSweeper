@@ -34,14 +34,15 @@
     <addaction name="separator"/>
     <addaction name="action_Newgame"/>
     <addaction name="separator"/>
+    <addaction name="action_S"/>
+    <addaction name="action_L"/>
+    <addaction name="separator"/>
     <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menu_H">
     <property name="title">
-     <string>帮助(&amp;H)</string>
+     <string>更多(&amp;H)</string>
     </property>
-    <addaction name="action_Method"/>
-    <addaction name="separator"/>
     <addaction name="action_Rank"/>
     <addaction name="separator"/>
     <addaction name="action_About"/>
@@ -96,6 +97,19 @@
   <action name="action_About">
    <property name="text">
     <string>关于作者(&amp;A)</string>
+   </property>
+  </action>
+  <action name="action_S">
+   <property name="text">
+    <string>存档(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_L">
+   <property name="text">
+    <string>载入(&amp;L)</string>
    </property>
   </action>
  </widget>
