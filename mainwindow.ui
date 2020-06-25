@@ -45,6 +45,10 @@
     </property>
     <addaction name="action_Rank"/>
     <addaction name="separator"/>
+    <addaction name="action_B"/>
+    <addaction name="action_Sound"/>
+    <addaction name="action_Local"/>
+    <addaction name="separator"/>
     <addaction name="action_About"/>
    </widget>
    <addaction name="menu_S"/>
@@ -113,6 +117,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="action_Sound">
+   <property name="text">
+    <string>开/关音效(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_B">
+   <property name="text">
+    <string>开/关背景音乐(&amp;B)</string>
+   </property>
+  </action>
+  <action name="action_Local">
+   <property name="text">
+    <string>选择本地音乐(&amp;L)</string>
    </property>
   </action>
  </widget>

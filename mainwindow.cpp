@@ -20,9 +20,21 @@ MainWindow::MainWindow(QWidget *parent)
     crow = -3;
     duration = 0;
     level = 1;
+    sfx = true;
+    bgmb = true;
+    bgmName = "bgm.mp3";
     setFixedSize(mineMap.columnNum * 20 + offsetx * 2, mineMap.rowNum * 20 + offsety + 48);
     runtime = new QTimer(this);
     connect(runtime, SIGNAL(timeout()), this, SLOT(on_sec()));
+    bgm = new QMediaPlayer;
+    bgm->setMedia(QUrl::fromLocalFile(bgmName));
+    bgm->play();
+    clicksfx = new QSoundEffect(this);
+    clicksfx->setSource(QUrl("qrc:clicksfx"));
+    bombsfx = new QSoundEffect(this);
+    bombsfx->setSource(QUrl("qrc:lost"));
+    wonsfx = new QSoundEffect(this);
+    wonsfx->setSource(QUrl("qrc:won"));
 }
 
 MainWindow::~MainWindow()
@@ -191,6 +203,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event){
+
     int px = event->x() - offsetx - offsetcol;
     int py = event->y() - offsety;
 
@@ -207,6 +220,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         update();
     }
     else {
+        if (sfx == true) clicksfx->play();
         //点击响应
         if (mineMap.IsLose == 0 && mineMap.IsWin == 0) {
             //开始计时
@@ -246,6 +260,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
             //mineMap.tZero = 0;
         }
 
+
         update();
 
         QPixmap winbmp(":win");
@@ -253,6 +268,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
 
         //Messagebox提示
         if (mineMap.IsLose) {
+            if (sfx == true) bombsfx->play();
             QMessageBox message(QMessageBox::NoIcon, "", "你输了！要继续游戏吗？", QMessageBox::Yes | QMessageBox::No, NULL);
             message.setIconPixmap(losebmp);
             if(message.exec() == QMessageBox::Yes) {
@@ -263,6 +279,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                 exit(0);
         }
         else if (mineMap.IsWin) {
+            if (sfx == true) wonsfx->play();
             if (level == 0) {
                 QMessageBox message(QMessageBox::NoIcon, "", "你赢了！再来一局？", QMessageBox::Yes | QMessageBox::No, NULL);
                 if (message.exec() == QMessageBox::Yes) {
@@ -440,6 +457,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
             }
         }
     }
+
 }
 
 void MainWindow::on_action_Newgame_triggered() {
@@ -595,7 +613,7 @@ void MainWindow::on_action_L_triggered() {
 }
 
 void MainWindow::on_action_S_triggered() {
-    if (mineMap.IsWin == 0 & mineMap.IsLose == 0) {
+    if (mineMap.IsWin == 0 && mineMap.IsLose == 0) {
         //暂存duration
         QTime endTime = QTime::currentTime();
         int due = beginTime.msecsTo((endTime));
@@ -638,4 +656,31 @@ void MainWindow::on_action_S_triggered() {
         QMessageBox::warning(NULL, "警告", "游戏已结束，不能存档。", QMessageBox::Ok, QMessageBox::Ok);
     if (!runtime->isActive())
         runtime->start(1000);
+}
+
+void MainWindow::on_action_Sound_triggered() {
+    if (sfx == true) sfx = false;
+    else sfx = true;
+}
+
+void MainWindow::on_action_B_triggered() {
+    if (bgmb == false) {
+        bgmb = true;
+        bgm->play();
+    }
+    else {
+        bgmb = false;
+        bgm->stop();
+    }
+
+}
+
+void MainWindow::on_action_Local_triggered() {
+    bgmName = QFileDialog::getOpenFileName(this, "打开", "", "音频文件(*.wav *.mp3)");
+    if (bgmName.isEmpty())
+        return;
+    else {
+        bgm->setMedia(QUrl::fromLocalFile(bgmName));
+        bgm->play();
+    }
 }

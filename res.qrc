@@ -9,5 +9,8 @@
         <file alias="lose">res/lose.bmp</file>
         <file alias="picTab">res/Tab.jpg</file>
         <file alias="Wec">res/Wechat.jpg</file>
+        <file alias="clicksfx">res/click.wav</file>
+        <file alias="won">res/win.wav</file>
+        <file alias="lost">res/12439.wav</file>
     </qresource>
 </RCC>

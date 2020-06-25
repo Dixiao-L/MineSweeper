@@ -6,6 +6,8 @@
 #include <QTime>
 #include <QTimer>
 #include <QFileDialog>
+#include <QtMultimedia/QSoundEffect>
+#include <QMediaPlayer>
 
 #include "minemap.h"
 #include "dialogsize.h"
@@ -42,6 +44,11 @@ private:
     int duration;   //用时
     int level;  //0-3   自定义，简单，中级，高级
     QTimer *runtime;
+    QMediaPlayer *bgm;
+    QSoundEffect *clicksfx, *bombsfx, *wonsfx;
+    QString bgmName;    //bgm路径
+    bool sfx;   //音效
+    bool bgmb;  //bgm
 
 private slots:
     void on_action_Newgame_triggered();
@@ -55,6 +62,9 @@ private slots:
     void on_sec();  //计时
 
     void on_action_Rank_triggered();
+    void on_action_B_triggered();
+    void on_action_Sound_triggered();
+    void on_action_Local_triggered();
     void on_action_About_triggered();
 
 };
