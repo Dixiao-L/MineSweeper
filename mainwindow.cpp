@@ -242,7 +242,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         if (mineMap.rowNum * mineMap.columnNum - mineMap.digNum == mineMap.mineNum) {
             mineMap.IsWin = 1;
             QTime endTime = QTime::currentTime();
-            duration = beginTime.msecsTo(endTime);
+            duration = beginTime.msecsTo(endTime) + mineMap.tZero;
+            //mineMap.tZero = 0;
         }
 
         update();
@@ -546,4 +547,95 @@ void MainWindow::on_action_About_triggered() {
     DialogAbout *dlgAbout = new DialogAbout(this);
     dlgAbout->aboutShow();
     dlgAbout->exec();
+}
+
+void MainWindow::on_action_L_triggered() {
+    QString fileName = QFileDialog::getOpenFileName(this, "打开", "", "存档文件(*.mine)");
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+
+        mineMap.FreeMap();
+        mineMap.IsWin = 0;
+        mineMap.IsLose = 0;
+
+        QTextStream readfile(&file);
+        QString strLine;
+        strLine = readfile.readLine();
+        mineMap.flagNum = strLine.section(',', 0, 0).toInt();
+        mineMap.digNum = strLine.section(',', 1, 1).toInt();
+        mineMap.timer = strLine.section(',', 2, 2).toInt();
+        mineMap.tZero = strLine.section(',', 3, 3).toInt();
+        mineMap.columnNum = strLine.section(',', 4, 4).toInt();
+        mineMap.rowNum = strLine.section(',', 5, 5).toInt();
+        level = strLine.section(',', 6, 6).toInt();
+
+        mineMap.Map = (int ***)malloc(mineMap.rowNum * sizeof (int **));
+        for (int i = 0; i < mineMap.rowNum; i++) {
+            mineMap.Map[i] = (int **)malloc(mineMap.columnNum * sizeof (int *));
+            for (int j = 0; j < mineMap.columnNum; j++) {
+                strLine = readfile.readLine();
+                mineMap.Map[i][j] = (int *)malloc(NOS * sizeof (int));
+                mineMap.Map[i][j][MINE] = strLine.section(',', 0, 0).toInt();
+                mineMap.Map[i][j][NUM] = strLine.section(',', 1, 1).toInt();
+                mineMap.Map[i][j][STATE] = strLine.section(',', 2, 2).toInt();
+            }
+        }
+        file.close();
+
+        if (!runtime->isActive()) {
+            runtime->start(1000);
+        }
+        setFixedSize(qMax(9, mineMap.columnNum) * 20 + offsetx * 2, mineMap.rowNum * 20 + offsety + 48);
+        update();
+    }
+}
+
+void MainWindow::on_action_S_triggered() {
+    if (mineMap.IsWin == 0 & mineMap.IsLose == 0) {
+        //暂存duration
+        QTime endTime = QTime::currentTime();
+        int due = beginTime.msecsTo((endTime));
+
+        //计时器停止
+        if (runtime->isActive()) {
+            runtime->stop();
+        }
+
+        QString fileName = QFileDialog::getSaveFileName(this, "存档", "", "存档文件(*.mine)");
+        if (fileName.isEmpty())
+            return;
+        else {
+            QFile file(fileName);
+            if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+                return;
+            QTextStream save(&file);
+
+            //文档结构 flagnum, dignum, timer, tzero, columnNum, rowNum, level
+
+            save << mineMap.flagNum << ',';
+            save << mineMap.digNum << ',';
+            save << mineMap.timer << ',';
+            save << due << ',';
+            save << mineMap.columnNum << ',';
+            save << mineMap.rowNum <<',';
+            save << level << endl;
+
+            for (int i = 0; i < mineMap.rowNum; i++) {
+                for (int j = 0; j<mineMap.columnNum; j++) {
+                    save << mineMap.Map[i][j][MINE] << ',';
+                    save << mineMap.Map[i][j][NUM] << ',';
+                    save << mineMap.Map[i][j][STATE] << endl;
+                }
+            }
+            file.close();
+        }
+    }
+    else
+        QMessageBox::warning(NULL, "警告", "游戏已结束，不能存档。", QMessageBox::Ok, QMessageBox::Ok);
+    if (!runtime->isActive())
+        runtime->start(1000);
 }

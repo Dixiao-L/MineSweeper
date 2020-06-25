@@ -39,6 +39,7 @@ public:
     int flagNum, digNum;    //旗数、挖开数
     int IsWin, IsLose;  //输赢状态
     int timer;  //计时器
+    int tZero;  //存档时间
 
 private:
     //递归展开

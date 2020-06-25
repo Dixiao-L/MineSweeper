@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QTime>
 #include <QTimer>
+#include <QFileDialog>
 
 #include "minemap.h"
 #include "dialogsize.h"
@@ -49,6 +50,8 @@ private slots:
     void on_action_Senior_triggered();
     void on_action_Manual_triggered();
     void on_action_Exit_triggered();
+    void on_action_S_triggered();
+    void on_action_L_triggered();
     void on_sec();  //计时
 
     void on_action_Rank_triggered();

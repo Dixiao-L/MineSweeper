@@ -111,6 +111,9 @@
    <property name="text">
     <string>载入(&amp;L)</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
   </action>
  </widget>
  <resources/>

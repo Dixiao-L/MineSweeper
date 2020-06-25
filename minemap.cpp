@@ -23,6 +23,7 @@ void MineMap::Init() {
     IsWin = 0;
     IsLose = 0;
     timer = 0;
+    tZero = 0;
     Map = (int ***)malloc(rowNum * sizeof(int **));
 
     for (int i = 0; i < rowNum; i++)
