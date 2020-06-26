@@ -48,6 +48,7 @@
     <addaction name="action_B"/>
     <addaction name="action_Sound"/>
     <addaction name="action_Local"/>
+    <addaction name="action_URL"/>
     <addaction name="separator"/>
     <addaction name="action_About"/>
    </widget>
@@ -132,6 +133,11 @@
   <action name="action_Local">
    <property name="text">
     <string>选择本地音乐(&amp;L)</string>
+   </property>
+  </action>
+  <action name="action_URL">
+   <property name="text">
+    <string>选择在线音乐(&amp;U)</string>
    </property>
   </action>
  </widget>

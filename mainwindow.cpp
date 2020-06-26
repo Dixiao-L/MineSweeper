@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     sfx = true;
     bgmb = true;
     bgmName = "bgm.mp3";
+    //bgmName = "http://m10.music.126.net/20200626161800/012db663bc4adcee98d74f430edc3ff3/ymusic/obj/w5zDlMODwrDDiGjCn8Ky/2892241091/b1f7/68a7/5b0b/e80919208e2dd73c533d5f9b8a690751.mp3";
     setFixedSize(mineMap.columnNum * 20 + offsetx * 2, mineMap.rowNum * 20 + offsety + 48);
     runtime = new QTimer(this);
     connect(runtime, SIGNAL(timeout()), this, SLOT(on_sec()));
@@ -269,7 +270,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         //Messagebox提示
         if (mineMap.IsLose) {
             if (sfx == true) bombsfx->play();
-            QMessageBox message(QMessageBox::NoIcon, "", "你输了！要继续游戏吗？", QMessageBox::Yes | QMessageBox::No, NULL);
+            QMessageBox message(QMessageBox::NoIcon, "哎", "你输了！要继续游戏吗？", QMessageBox::Yes | QMessageBox::No, NULL);
             message.setIconPixmap(losebmp);
             if(message.exec() == QMessageBox::Yes) {
                 mineMap.FreeMap();
@@ -281,7 +282,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         else if (mineMap.IsWin) {
             if (sfx == true) wonsfx->play();
             if (level == 0) {
-                QMessageBox message(QMessageBox::NoIcon, "", "你赢了！再来一局？", QMessageBox::Yes | QMessageBox::No, NULL);
+                QMessageBox message(QMessageBox::NoIcon, "tql", "你赢了！再来一局？", QMessageBox::Yes | QMessageBox::No, NULL);
+                message.setIconPixmap(winbmp);
                 if (message.exec() == QMessageBox::Yes) {
                     duration = 0;
                     mineMap.FreeMap();
@@ -291,7 +293,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                     exit(0);
             }
             else {
-                QMessageBox message(QMessageBox::NoIcon, "", "你赢了！要将成绩记入龙虎榜吗？", QMessageBox::Yes | QMessageBox::No, NULL);
+                QMessageBox message(QMessageBox::NoIcon, "tql", "你赢了！要将成绩记入龙虎榜吗？", QMessageBox::Yes | QMessageBox::No, NULL);
                 message.setIconPixmap(winbmp);
                 if (message.exec() == QMessageBox::Yes)
                 {
@@ -435,12 +437,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                         rankFile.close();
 
                         if (flag == 0){
-                            QMessageBox message(QMessageBox::NoIcon, "", dlgName->nameSet() + " tql。");
+                            QMessageBox message(QMessageBox::NoIcon, "tql", dlgName->nameSet() + " tql。");
                             message.setIconPixmap(winbmp);
                             message.exec();
                         }
                         else{
-                            QMessageBox message(QMessageBox::NoIcon, "", "很遗憾，你没进前五，但是还是tql。");
+                            QMessageBox message(QMessageBox::NoIcon, "tql", "很遗憾，你没进前五，但是还是tql。");
                             message.setIconPixmap(losebmp);
                             message.exec();
                         }
@@ -568,7 +570,7 @@ void MainWindow::on_action_About_triggered() {
 }
 
 void MainWindow::on_action_L_triggered() {
-    QString fileName = QFileDialog::getOpenFileName(this, "打开", "", "存档文件(*.mine)");
+    QString fileName = QFileDialog::getOpenFileName(this, "载入", "", "存档文件(*.mine)");
     if (fileName.isEmpty())
         return;
     else {
@@ -619,11 +621,11 @@ void MainWindow::on_action_S_triggered() {
         int due = beginTime.msecsTo((endTime));
 
         //计时器停止
-        if (runtime->isActive()) {
-            runtime->stop();
-        }
+//        if (runtime->isActive()) {
+//            runtime->stop();
+//        }
 
-        QString fileName = QFileDialog::getSaveFileName(this, "存档", "", "存档文件(*.mine)");
+        QString fileName = QFileDialog::getSaveFileName(this, "存档", QDateTime::currentDateTime().toString("yyyyMMddhhmmss"), "存档文件(*.mine)");
         if (fileName.isEmpty())
             return;
         else {
@@ -654,8 +656,8 @@ void MainWindow::on_action_S_triggered() {
     }
     else
         QMessageBox::warning(NULL, "警告", "游戏已结束，不能存档。", QMessageBox::Ok, QMessageBox::Ok);
-    if (!runtime->isActive())
-        runtime->start(1000);
+//    if (!runtime->isActive())
+//        runtime->start(1000);
 }
 
 void MainWindow::on_action_Sound_triggered() {
@@ -676,11 +678,69 @@ void MainWindow::on_action_B_triggered() {
 }
 
 void MainWindow::on_action_Local_triggered() {
-    bgmName = QFileDialog::getOpenFileName(this, "打开", "", "音频文件(*.wav *.mp3)");
+    bgmName = QFileDialog::getOpenFileName(this, "选择背景音乐", "bgm.mp3", "音频文件(*.*)");
     if (bgmName.isEmpty())
         return;
     else {
         bgm->setMedia(QUrl::fromLocalFile(bgmName));
         bgm->play();
     }
+    connect(bgm,
+            static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error),
+            [=](QMediaPlayer::Error error){
+        switch (error) {
+        case 0:
+            break;
+        case 1:
+            QMessageBox::critical(NULL, "错误", "无法解析媒体文件", QMessageBox::Yes, NULL);
+            break;
+        case 2:
+            QMessageBox::critical(NULL, "错误", "媒体文件格式错误", QMessageBox::Yes, NULL);
+            break;
+        case 3:
+            QMessageBox::critical(NULL, "错误", "网络错误", QMessageBox::Yes, NULL);
+            break;
+        case 4:
+            QMessageBox::critical(NULL, "错误", "文件拒绝访问", QMessageBox::Yes, NULL);
+            break;
+        case 5:
+            QMessageBox::critical(NULL, "错误", "找不到媒体播放器", QMessageBox::Yes, NULL);
+            break;
+        case 6:
+            break;
+        }
+    });
 }
+
+void MainWindow::on_action_URL_triggered() {
+    bool ok = false;
+    bgmName = QInputDialog::getText(this, "播放在线音乐", "请输入媒体资源URL:", QLineEdit::Normal, "", &ok);
+    bgm->setMedia(QUrl::fromUserInput(bgmName));
+    connect(bgm,
+            static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error),
+            [=](QMediaPlayer::Error error){
+        switch (error) {
+        case 0:
+            break;
+        case 1:
+            QMessageBox::critical(NULL, "错误", "无法解析媒体文件", QMessageBox::Yes, NULL);
+            break;
+        case 2:
+            QMessageBox::critical(NULL, "错误", "媒体文件格式错误", QMessageBox::Yes, NULL);
+            break;
+        case 3:
+            QMessageBox::critical(NULL, "错误", "网络错误", QMessageBox::Yes, NULL);
+            break;
+        case 4:
+            QMessageBox::critical(NULL, "错误", "文件拒绝访问", QMessageBox::Yes, NULL);
+            break;
+        case 5:
+            QMessageBox::critical(NULL, "错误", "找不到媒体播放器", QMessageBox::Yes, NULL);
+            break;
+        case 6:
+            break;
+        }
+    });
+    bgm->play();
+}
+

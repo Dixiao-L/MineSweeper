@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QtMultimedia/QSoundEffect>
 #include <QMediaPlayer>
 
@@ -65,6 +66,7 @@ private slots:
     void on_action_B_triggered();
     void on_action_Sound_triggered();
     void on_action_Local_triggered();
+    void on_action_URL_triggered();
     void on_action_About_triggered();
 
 };
