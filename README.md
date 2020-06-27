@@ -19,6 +19,10 @@
 
 华大学 2020-春-计程设大作业 扫雷 Qt实现 xp重制版
 
+![GitHub](https://img.shields.io/github/license/Dixiao-L/MineSweeper)
+
+![GitHub followers](https://img.shields.io/github/followers/Dixiao-L?style=social)
+
 <!--简单的操作说明及注意事项-->
 
 ## 👋操作说明
