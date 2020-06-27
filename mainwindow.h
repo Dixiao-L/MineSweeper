@@ -44,12 +44,12 @@ private:
     bool tog;   //是否双键
     int duration;   //用时
     int level;  //0-3   自定义，简单，中级，高级
-    QTimer *runtime;
+    QTimer *runtime;    //界面计时器
     QMediaPlayer *bgm;
     QSoundEffect *clicksfx, *bombsfx, *wonsfx;
     QString bgmName;    //bgm路径
-    bool sfx;   //音效
-    bool bgmb;  //bgm
+    bool sfx;   //音效开关
+    bool bgmb;  //bgm开关
 
 private slots:
     void on_action_Newgame_triggered();

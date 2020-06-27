@@ -10,8 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    this->setWindowTitle("扫雷");
     mineMap.Init();
     offsetx = 7;
     offsety = 30;
@@ -30,12 +28,16 @@ MainWindow::MainWindow(QWidget *parent)
     bgm = new QMediaPlayer;
     bgm->setMedia(QUrl::fromLocalFile(bgmName));
     bgm->play();
+    connect(bgm,&QMediaPlayer::mediaStatusChanged,bgm,&QMediaPlayer::play);
     clicksfx = new QSoundEffect(this);
     clicksfx->setSource(QUrl("qrc:clicksfx"));
     bombsfx = new QSoundEffect(this);
     bombsfx->setSource(QUrl("qrc:lost"));
     wonsfx = new QSoundEffect(this);
     wonsfx->setSource(QUrl("qrc:won"));
+
+    ui->setupUi(this);
+    this->setWindowTitle("扫雷");
 }
 
 MainWindow::~MainWindow()
@@ -591,7 +593,8 @@ void MainWindow::on_action_L_triggered() {
         mineMap.tZero = strLine.section(',', 3, 3).toInt();
         mineMap.columnNum = strLine.section(',', 4, 4).toInt();
         mineMap.rowNum = strLine.section(',', 5, 5).toInt();
-        level = strLine.section(',', 6, 6).toInt();
+        mineMap.mineNum = strLine.section(',', 6, 6).toInt();
+        level = strLine.section(',', 7, 7).toInt();
 
         mineMap.Map = (int ***)malloc(mineMap.rowNum * sizeof (int **));
         for (int i = 0; i < mineMap.rowNum; i++) {
@@ -634,7 +637,7 @@ void MainWindow::on_action_S_triggered() {
                 return;
             QTextStream save(&file);
 
-            //文档结构 flagnum, dignum, timer, tzero, columnNum, rowNum, level
+            //文档结构 flagnum, dignum, timer, tzero, columnNum, rowNum, mineNum, level
 
             save << mineMap.flagNum << ',';
             save << mineMap.digNum << ',';
@@ -642,6 +645,7 @@ void MainWindow::on_action_S_triggered() {
             save << due << ',';
             save << mineMap.columnNum << ',';
             save << mineMap.rowNum <<',';
+            save << mineMap.mineNum << ',';
             save << level << endl;
 
             for (int i = 0; i < mineMap.rowNum; i++) {
@@ -669,47 +673,49 @@ void MainWindow::on_action_B_triggered() {
     if (bgmb == false) {
         bgmb = true;
         bgm->play();
+
     }
     else {
         bgmb = false;
-        bgm->stop();
+        bgm->pause();
     }
 
 }
 
 void MainWindow::on_action_Local_triggered() {
-    bgmName = QFileDialog::getOpenFileName(this, "选择背景音乐", "bgm.mp3", "音频文件(*.*)");
+    bgmName = QFileDialog::getOpenFileName(this, "选择背景音乐", "bgm.mp3", "音频文件(*.wav *.mp3 *.wma *.ogg *.ape *.aac);;视频文件(*.mp4 *.mov *.avi *.dat *.mpg *.3gp *.rmvb *.mkv *webm);;所有文件(*.*)");
     if (bgmName.isEmpty())
         return;
     else {
         bgm->setMedia(QUrl::fromLocalFile(bgmName));
+
+        connect(bgm,
+                static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error),
+                [=](QMediaPlayer::Error error){
+            switch (error) {
+            case 0:
+                break;
+            case 1:
+                QMessageBox::critical(NULL, "错误", "无法解析媒体文件", QMessageBox::Yes, NULL);
+                break;
+            case 2:
+                QMessageBox::critical(NULL, "错误", "媒体文件格式错误", QMessageBox::Yes, NULL);
+                break;
+            case 3:
+                QMessageBox::critical(NULL, "错误", "网络错误", QMessageBox::Yes, NULL);
+                break;
+            case 4:
+                QMessageBox::critical(NULL, "错误", "文件拒绝访问", QMessageBox::Yes, NULL);
+                break;
+            case 5:
+                QMessageBox::critical(NULL, "错误", "找不到媒体播放器", QMessageBox::Yes, NULL);
+                break;
+            case 6:
+                break;
+            }
+        });
         bgm->play();
     }
-    connect(bgm,
-            static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error),
-            [=](QMediaPlayer::Error error){
-        switch (error) {
-        case 0:
-            break;
-        case 1:
-            QMessageBox::critical(NULL, "错误", "无法解析媒体文件", QMessageBox::Yes, NULL);
-            break;
-        case 2:
-            QMessageBox::critical(NULL, "错误", "媒体文件格式错误", QMessageBox::Yes, NULL);
-            break;
-        case 3:
-            QMessageBox::critical(NULL, "错误", "网络错误", QMessageBox::Yes, NULL);
-            break;
-        case 4:
-            QMessageBox::critical(NULL, "错误", "文件拒绝访问", QMessageBox::Yes, NULL);
-            break;
-        case 5:
-            QMessageBox::critical(NULL, "错误", "找不到媒体播放器", QMessageBox::Yes, NULL);
-            break;
-        case 6:
-            break;
-        }
-    });
 }
 
 void MainWindow::on_action_URL_triggered() {
