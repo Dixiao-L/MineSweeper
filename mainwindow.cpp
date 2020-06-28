@@ -179,14 +179,14 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
 
     if (event->buttons() == (Qt::LeftButton|Qt::RightButton)) {
         tog = 1;
-        ccol = px / 20;
+        ccol = px > 0 ? px / 20 : -3;
         crow = py / 20 - 2;
         if (crow >= 0 && crow < mineMap.rowNum && ccol >= 0 && ccol < mineMap.columnNum){
             update();
         }
     }
     else if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
-        ccol = px / 20;
+        ccol = px > 0 ? px / 20 : -3;
         crow = py / 20 - 2;
         if ((crow >= 0 && crow < mineMap.rowNum && ccol >= 0 && ccol < mineMap.columnNum) || (px > qMax(9, mineMap.columnNum) * 10 - 12 && px < qMax(9, mineMap.columnNum) * 10 + 12 && py > 7 && py < 7 + 24)){
             update();
@@ -198,7 +198,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
     int px = event->x() - offsetx - offsetcol;
     int py = event->y() - offsety;
 
-    ccol = px / 20;
+    ccol = px > 0 ? px / 20 : -3;
     crow = py / 20 - 2;
     if (crow >= 0 && crow < mineMap.rowNum && ccol >= 0 && ccol < mineMap.columnNum){
         update();
@@ -210,10 +210,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
     int px = event->x() - offsetx - offsetcol;
     int py = event->y() - offsety;
 
-    int col = px / 20;
+    int col = px > 0 ? px / 20 : -3;
     int row = py / 20 - 2;
     ccol = -3;
     crow = -3;
+
+    if (sfx == true) clicksfx->play();
 
     //点击表情重启游戏
     if (px > qMax(9, mineMap.columnNum) * 10 - 12 && px < qMax(9, mineMap.columnNum) * 10 + 12 && py > 7 && py < 7 + 24) {
@@ -222,8 +224,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         mineMap.Init();
         update();
     }
-    else {
-        if (sfx == true) clicksfx->play();
+    else if (col >= 0 && col < mineMap.columnNum && row >= 0 && row < mineMap.rowNum) {
         //点击响应
         if (mineMap.IsLose == 0 && mineMap.IsWin == 0) {
             //开始计时
@@ -316,7 +317,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                         QString strLine, strNew;
 
                         //文件完整性校验
-                        int complete = 1;
+                        bool complete = 1;
                         if (rankFile.pos() == 0) complete = 0;
                         else {
                             rankFile.seek(0);
@@ -329,8 +330,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                             if (flag != 4) complete = 0;
                         }
 
-                        int flag = 0;
-                        if (complete == 0) {
+                        bool flag = 0;
+                        bool diff = 0;
+                        if (complete == 0) {    //新建龙虎榜
                             rankFile.remove();
                             if(!rankFile.open(QIODevice::WriteOnly | QIODevice::Text))
                                 return;
@@ -351,10 +353,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                 //ranking << duration << ',' << dlgName->nameSet() << endl;
                             strNew += "#RANKEND\n";
                             //ranking << "#RANKEND" << endl;
+                            diff = 1;
                         }
-                        else {
+                        else {  //增加条目
                             rankFile.seek(0);
-                            //int diff = 1;
+
                             int i = 0;
                             strLine = ranking.readLine();   //strLine == "#BEGIN"
                             while (true) {
@@ -363,6 +366,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     if (strLine != "#INTER"){
                                         if (duration < strLine.section(',', 0, 0).toDouble() && flag == 1) {
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
@@ -371,6 +375,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     else {
                                         if (i <= 5 && flag == 1){
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
@@ -378,11 +383,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     if (strLine == "#BEGIN") {
                                         flag = 1;
                                     }
+                                    if (strLine == "#INTER") {
+                                        flag = 0;
+                                    }
                                 }
                                 else if (level == 2) {
                                     if (strLine != "#SENIOR"){
                                         if (duration < strLine.section(',', 0, 0).toDouble() && flag == 1) {
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
@@ -391,6 +400,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     else {
                                         if (i <= 5 && flag == 1){
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
@@ -398,11 +408,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     if (strLine == "#INTER") {
                                         flag = 1;
                                     }
+                                    if (strLine == "#SENIOR") {
+                                        flag = 0;
+                                    }
                                 }
                                 else if (level == 3) {
                                     if (strLine != "#RANKEND"){
                                         if (duration < strLine.section(',', 0, 0).toDouble() && flag == 1) {
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
@@ -411,12 +425,16 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                                     else {
                                         if (i <= 5 && flag == 1){
                                             strNew += QString::number(duration) + ',' + dlgName->nameSet() + '\n';
+                                            diff = 1;
                                             ++i;
                                             flag = 0;
                                         }
                                     }
                                     if (strLine == "#SENIOR") {
                                         flag = 1;
+                                    }
+                                    if (strLine == "#RANKEND") {
+                                        flag = 0;
                                     }
                                 }
                                 if (strLine == "#INTER" || strLine == "#SENIOR" || strLine == "#RANKEND") {
@@ -438,7 +456,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
                         ranking << strNew;
                         rankFile.close();
 
-                        if (flag == 0){
+                        if (diff){
                             QMessageBox message(QMessageBox::NoIcon, "tql", dlgName->nameSet() + " tql。");
                             message.setIconPixmap(winbmp);
                             message.exec();
