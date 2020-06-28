@@ -74,6 +74,7 @@ void MainWindow::paintEvent(QPaintEvent *){
     //绘制剩余雷数
     int rm = mineMap.mineNum - mineMap.flagNum;
     if (rm < 0) rm =0;
+    else if (rm >= 1000) rm %= 1000;
     painter.drawPixmap(6 + offsetx, 5 + offsety, numbmp, rm / 100 * 20, 0, 20, 28);
     if (rm >= 100) rm %= 100;
     painter.drawPixmap(26 + offsetx, 5 + offsety, numbmp, rm / 10 * 20, 0, 20, 28);
